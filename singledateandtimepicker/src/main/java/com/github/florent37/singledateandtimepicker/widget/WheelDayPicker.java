@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -115,28 +116,15 @@ public class WheelDayPicker extends WheelPicker<String> {
     private Date convertItemToDate(int itemPosition) {
         Date date = null;
         final String itemText = adapter.getItemText(itemPosition);
-        final Calendar todayCalendar = Calendar.getInstance();
+        final GregorianCalendar todayCalendar = new GregorianCalendar();
 
         final int todayPosition = adapter.getData().indexOf(getTodayText());
 
         if (getTodayText().equals(itemText)) {
             date = todayCalendar.getTime();
         } else {
-            try {
-                date = getDateFormat().parse(itemText);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (date != null) {
-            //try to know the year
-            final Calendar dateCalendar = DateHelper.getCalendarOfDate(date);
-
-            todayCalendar.add(Calendar.DATE, (itemPosition - todayPosition));
-
-            dateCalendar.set(Calendar.YEAR, todayCalendar.get(Calendar.YEAR));
-            date = dateCalendar.getTime();
+            todayCalendar.add(GregorianCalendar.DAY_OF_YEAR,(itemPosition - todayPosition));
+            date = todayCalendar.getTime();
         }
 
         return date;
